@@ -24,10 +24,15 @@ st.set_page_config(
 )
 
 # dashboard title
-#st.image("netflix-logo-2-1", caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
+title_container = st.container()
+col1, col2 = st.columns([1, 20])
 image = Image.open('netflixlogo.png')
-st.image(image, caption='Netflix Logo')
-st.title("Netflix Data Analysis Dashboard")
+with title_container:
+            with col1:
+                st.image(image, width=80)
+            with col2:
+                st.markdown('<h1 style="color: red;">&nbsp; Netflix Data Analysis Dashboard</h1>',
+                            unsafe_allow_html=True)
 
 
 show_choice = st.multiselect('Which Movie or TV show do you want to display data for?', cleandata['title'].unique())
