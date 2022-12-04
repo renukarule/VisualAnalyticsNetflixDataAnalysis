@@ -24,10 +24,11 @@ st.set_page_config(
 )
 
 # dashboard title
+#st.image("netflix-logo-2-1", caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
 st.title("Netflix Data Analysis Dashboard")
 
 
-show_choice = st.multiselect('Which TV show do you want to display data for?', cleandata['title'].unique())
+show_choice = st.multiselect('Which Movie or TV show do you want to display data for?', cleandata['title'].unique())
 if show_choice:
     st.success('Yay! 🎉')
 else:
@@ -37,7 +38,7 @@ else:
 if show_choice:
     selected_description = cleandata[cleandata['title'] == show_choice[0]]
     st.markdown("Detailed Data View for selected show")
-    st.write(selected_description)
+    st.write(selected_description[['title','year','certificate','duration','genre','rating','description','stars','votes']])
 
 # top-level filters
 year_filter = st.selectbox("Select the Year", pd.unique(cleandata['year']))
@@ -79,15 +80,28 @@ with placeholder.container():
     
     with fig_col2:
         st.markdown("Count of TV shows by their certificate type")
-        fig2 = px.histogram(data_frame=cleandata, x="genre",y=None,color_discrete_sequence = ['orange'])
+        fig2 = px.histogram(data_frame=cleandata, x="genre",y=None,color_discrete_sequence = ['orange']).update_xaxes(categoryorder="total ascending")
         st.write(fig2)
 
 
 grp_by_certificate = cleandata.groupby("certificate")["title"].count()
-grp_by_certificate
+grp_by_certificate = grp_by_certificate.reset_index()
+
+fig1, fig2 = st.columns(2)
+
+with fig1:
+    bar = alt.Chart(grp_by_certificate).mark_bar().encode(
+        x=alt.X('certificate', sort='y'),
+        y=alt.Y('title', title = 'count')
+        ).properties(height = 400, width = 600
+        ).interactive()
+    st.write(bar)
+with fig2:
+    grp_by_certificate
+    
 
 # Bar Chart
-st.bar_chart(grp_by_certificate)
+
 
 st.title('Word Cloud showing the most popular stars of Netflix TV shows')
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -99,24 +113,24 @@ st.pyplot()
 
 title = df['title']
 year = df['year']
-certificate = df['certificate']
-duration = df['duration']
-genre = df['genre']
-rating = df['rating']
+#certificate = df['certificate']
+#duration = df['duration']
+#genre = df['genre']
+#rating = df['rating']
 description = df['description']
-stars = df['stars']
-votes = df['votes']
+#stars = df['stars']
+#votes = df['votes']
 
 
 year_df = df[df['year'] == year_filter]
 fig = px.treemap(year_df,
                 path=[px.Constant("movies"), 'year', 'title','description'],
                 values=year_df['year'],
-                color=year_df['year'],
+                #color=year_df['year'],
                 color_continuous_scale=['yellow', 'green', 'blue'],
                 title='TreeMap displaying Movie releases by selected year',
                 hover_name=year_df['description'],
-                width = 1200,
+                width = 1400,
                 height = 800
 )
 
