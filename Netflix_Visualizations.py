@@ -25,6 +25,8 @@ st.set_page_config(
 
 # dashboard title
 #st.image("netflix-logo-2-1", caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
+image = Image.open('netflixlogo.png')
+st.image(image, caption='Netflix Logo')
 st.title("Netflix Data Analysis Dashboard")
 
 
@@ -142,13 +144,4 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
-
-
-
-
-
-   
-
-
-
     
